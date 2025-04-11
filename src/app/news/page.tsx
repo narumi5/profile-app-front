@@ -49,7 +49,7 @@ export default function News() {
     const news = await axios.get("http://localhost:8000/news");
     setNewsData(news.data);
     setLoading(false);
-  }; 
+  };
 
   useEffect(() => {
     fetch();
