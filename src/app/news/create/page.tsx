@@ -86,7 +86,7 @@ export default function NewsCreate() {
             />
           </div>
 
-          <Button className="mt-6">送信</Button>
+          <Button className="mt-6">作成</Button>
         </form>
       </Form>
       <Button asChild>

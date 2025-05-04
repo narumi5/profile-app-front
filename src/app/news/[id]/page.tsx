@@ -1,5 +1,6 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import {
   Form,
@@ -10,11 +11,23 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
+import Link from "next/dist/client/link";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { undefined, z } from "zod";
+import { use } from "react";
 
 type Params = {
   params: {
@@ -45,7 +58,12 @@ const formSchema = z.object({
   userId: z.number(),
 });
 
-export default function EditNews({ params }: Params) {
+export default function EditNews({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = use(params);
   const [newsData, setNewsData] = useState<News>();
   const form = useForm<EditNewsForm>({
     resolver: zodResolver(formSchema),
@@ -53,10 +71,32 @@ export default function EditNews({ params }: Params) {
   });
 
   const news = async () => {
-    const news = await axios.get("http://localhost:8000/news/13");
+    const news = await axios.get(`http://localhost:8000/news/${id}`);
+    console.log(news);
+    console.log(news.data);
+    console.log("beforerwatch", form.watch());
+    form.reset({
+      id: news.data.id,
+      title: news.data.title,
+      body: news.data.body,
+      status: news.data.status,
+      userId: news.data.userId,
+    });
+    console.log("afterwatch", form.watch());
     setNewsData(news.data);
   };
-  const onSubmit = async () => {};
+
+  const router = useRouter();
+  const onSubmit = async (data: EditNewsForm) => {
+    try {
+      const response = await axios.put("http://localhost:8000/news", data);
+      console.log(response);
+      router.push("/news");
+    } catch (error) {
+      alert("エラーが起きました");
+      console.log(error);
+    }
+  };
 
   useEffect(() => {
     news();
@@ -66,6 +106,7 @@ export default function EditNews({ params }: Params) {
     <>
       <div>EditNews</div>
       <div>{newsData?.id}</div>
+
       <Card className="w-96 mx-auto p-7 mt-6">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -85,9 +126,60 @@ export default function EditNews({ params }: Params) {
                   );
                 }}
               />
+
+              <FormField
+                control={form.control}
+                name="body"
+                render={({ field }) => {
+                  return (
+                    <FormItem className="mt-6">
+                      <FormLabel>内容</FormLabel>
+                      <FormControl>
+                        <Input {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  );
+                }}
+              />
+
+              <FormField
+                control={form.control}
+                name="status"
+                render={({ field }) => {
+                  return (
+                    <FormItem className="mt-6">
+                      <FormLabel>ステータス</FormLabel>
+                      <FormControl>
+                        <Select
+                          value={String(field.value)} // フォームの値をSelectにバインド
+                          onValueChange={(value) => field.onChange(Number(value))} // 値が変更されたときにフォームの状態を更新>
+                        >
+                          <SelectTrigger className="w-[180px]">
+                            <SelectValue placeholder="選択してください" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectGroup>
+                              <SelectLabel></SelectLabel>
+                              <SelectItem value="1">公開</SelectItem>
+                              <SelectItem value="0">非公開</SelectItem>
+                            </SelectGroup>
+                          </SelectContent>
+                        </Select>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  );
+                }}
+              />
             </div>
+
+            <Button className="mt-6">更新</Button>
           </form>
         </Form>
+        <Button asChild>
+          <Link href="/news">一覧に戻る</Link>
+        </Button>
       </Card>
     </>
   );

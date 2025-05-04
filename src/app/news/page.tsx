@@ -72,6 +72,7 @@ export default function News() {
               <TableRow>
                 <TableHead className="max-w-32 font-bold">タイトル</TableHead>
                 <TableHead className="max-w-48 font-bold">内容</TableHead>
+                <TableHead className="max-w-48 font-bold">ステータス</TableHead>
                 <TableHead className="max-w-48 font-bold"></TableHead>
               </TableRow>
             </TableHeader>
@@ -84,11 +85,13 @@ export default function News() {
                   <TableCell className="whitespace-nowrap overflow-hidden text-ellipsis max-w-[200px]">
                     {news.body}
                   </TableCell>
+                  <TableCell>{news.status === 1 ? "公開" : "非公開"}</TableCell>
                   <TableCell className="whitespace-nowrap overflow-hidden text-ellipsis max-w-[200px]">
                     <Dialog>
                       <DialogTrigger asChild>
                         <Button>削除</Button>
                       </DialogTrigger>
+
                       <DialogContent className="sm:max-w-[425px]">
                         <DialogHeader>
                           <DialogTitle>
@@ -113,6 +116,10 @@ export default function News() {
                         </DialogFooter>
                       </DialogContent>
                     </Dialog>
+
+                    <Button className="ml-5" variant={"outline"}>
+                      <Link href={`/news/${news.id}`}>編集</Link>
+                    </Button>
                   </TableCell>
                 </TableRow>
               ))}
