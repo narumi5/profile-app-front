@@ -45,14 +45,12 @@ export default function NewsCreate() {
   });
   const router = useRouter();
   const onSubmit = async (data: LoginForm) => {
-    console.log(data);
     try {
       const response = await axios.post(
         "http://localhost:8000/auth/signup",
         data
       );
 
-      console.log(response);
       router.push("/login");
     } catch (error: any) {
       if (
@@ -68,7 +66,6 @@ export default function NewsCreate() {
         alert("エラーが起きました");
       }
       console.log(error);
-      console.log(error.respose);
     }
   };
 

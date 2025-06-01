@@ -28,7 +28,6 @@ export default function PracticeUser() {
       <div>{users[1].company.name}</div>
       <div>
         {users.map((user, index) => {
-          console.log(index);
           return (
             <div key={index}>
               <div>名前:{user.name}</div>

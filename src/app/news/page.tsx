@@ -52,6 +52,8 @@ export default function News() {
   };
 
   useEffect(() => {
+    const username = localStorage.getItem("username");
+    
     fetch();
   }, []);
   return (

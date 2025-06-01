@@ -72,9 +72,6 @@ export default function EditNews({
 
   const news = async () => {
     const news = await axios.get(`http://localhost:8000/news/${id}`);
-    console.log(news);
-    console.log(news.data);
-    console.log("beforerwatch", form.watch());
     form.reset({
       id: news.data.id,
       title: news.data.title,
@@ -82,7 +79,6 @@ export default function EditNews({
       status: news.data.status,
       userId: news.data.userId,
     });
-    console.log("afterwatch", form.watch());
     setNewsData(news.data);
   };
 
@@ -90,7 +86,6 @@ export default function EditNews({
   const onSubmit = async (data: EditNewsForm) => {
     try {
       const response = await axios.put("http://localhost:8000/news", data);
-      console.log(response);
       router.push("/news");
     } catch (error) {
       alert("エラーが起きました");

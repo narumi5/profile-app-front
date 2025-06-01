@@ -45,14 +45,14 @@ export default function NewsCreate() {
   });
   const router = useRouter();
   const onSubmit = async (data: LoginForm) => {
-    console.log(data);
+    
     try {
       const response = await axios.post(
         "http://localhost:8000/auth/login",
         data
       );
-      console.log(response);
-      // router.push("/login");
+      localStorage.setItem("token",response.data.access_token);
+      router.push("/news");
     } catch (error) {
       alert("エラーが起きました");
       console.log(error);

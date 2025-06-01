@@ -39,16 +39,13 @@ export default function NewsCreate() {
   });
   const router = useRouter();
   const onSubmit = async (data: NewsForm) => {
-    console.log(data);
     try {
       const response = await axios.post("http://localhost:8000/news", data);
-      console.log(response);
       router.push("/news");
     } catch (error) {
       alert("エラーが起きました");
       console.log(error);
     }
-    console.log(onSubmit);
   };
   return (
     <Card className="w-96 mx-auto p-7 mt-6">
