@@ -4,6 +4,8 @@ import React, { useState, useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import axios from "axios";
 
+
+
 export const AuthContext = createContext(null);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
@@ -15,21 +17,27 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const currentPath = usePathname();
   useEffect(() => {
     const checkAuth = async () => {
-    const token = localStorage.getItem("token");
+      const token = localStorage.getItem("token");
 
+      if (currentPath === "/signup") {
+        return; // トークンがない場合、ログインページにリダイレクト
+      }
 
-    if (!token) {
-        // トークンがない場合、ログインページにリダイレクト
+      if (!token) {
         router.push("/login");
+
         return;
       }
 
       try {
-        const response = await axios.get("http://localhost:8000/users/profile", {
-          headers: {
-            Authorization: `Bearer ${token}`, // Bearer Token をヘッダーに設定
-          },
-        });
+        const response = await axios.get(
+          "http://localhost:8000/users/profile",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`, // Bearer Token をヘッダーに設定
+            },
+          }
+        );
         setIsLoggedIn(true);
       } catch (error) {
         console.error("認証エラー:", error);
